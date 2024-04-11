@@ -6,32 +6,28 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.RequiredArgsConstructor;
-
 
 @Entity
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Table(name = "steps")
-public class Step {
+@Table(name = "preview_recipes")
+public class PreviewRecipe {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "steps_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "preview_recipes_id_seq")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "folk_recipe_id", nullable = false)
-    private FolkRecipe folkRecipe;
+    @Column(name = "recipe_id", nullable = false)
+    private Long recipeId;
 
-    @Column(nullable = false)
-    private String step;
+    @Column(name = "recipe_type", nullable = false)
+    private RecipeType recipeType;
 
-    @Column(nullable = false)
-    private int stepNumber;
+    @Column(name = "number_views", nullable = false)
+    private Long numberViews;
 }
