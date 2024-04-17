@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "preview_recipes")
 public class PreviewRecipe {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "preview_recipes_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "preview_recipe_id_seq")
     private Long id;
 
     @Column(name = "recipe_id", nullable = false)

@@ -22,7 +22,7 @@ import java.util.Collection;
 @Table(name = "meal_types")
 public class MealType {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "meal_types_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "meal_type_id_seq")
     private Long id;
 
     @Column(nullable = false, unique = true)

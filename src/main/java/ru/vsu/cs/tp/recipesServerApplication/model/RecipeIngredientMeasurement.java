@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "recipe_ingredient_measurements")
 public class RecipeIngredientMeasurement {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_ingredient_measurements_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_ingredient_measurement_id_seq")
     private Long id;
 
     @ManyToOne
