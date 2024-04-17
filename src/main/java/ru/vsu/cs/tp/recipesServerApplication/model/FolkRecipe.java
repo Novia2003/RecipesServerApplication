@@ -24,7 +24,7 @@ import java.util.Collection;
 @Table(name = "folk_recipes")
 public class FolkRecipe {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "folk_recipes_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "folk_recipe_id_seq")
     private Long id;
 
     @Column(nullable = false)

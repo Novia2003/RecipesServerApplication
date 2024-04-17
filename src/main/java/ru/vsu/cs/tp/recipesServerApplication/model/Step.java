@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "steps")
 public class Step {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "steps_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "step_id_seq")
     private Long id;
 
     @ManyToOne
