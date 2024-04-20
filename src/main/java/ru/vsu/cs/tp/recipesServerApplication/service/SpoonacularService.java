@@ -21,7 +21,7 @@ public class SpoonacularService {
     }
 
     public String getIngredientPossibleUnits(int id) {
-        BigDecimal amount = new BigDecimal(1.0); // BigDecimal | The amount of this ingredient.
+        BigDecimal amount = new BigDecimal("1.0"); // BigDecimal | The amount of this ingredient.
         String unit = ""; // String | The unit for the given amount.
 
 

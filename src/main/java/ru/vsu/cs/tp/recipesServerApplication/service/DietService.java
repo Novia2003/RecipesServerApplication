@@ -3,7 +3,6 @@ package ru.vsu.cs.tp.recipesServerApplication.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.tp.recipesServerApplication.model.Diet;
-import ru.vsu.cs.tp.recipesServerApplication.model.MealType;
 import ru.vsu.cs.tp.recipesServerApplication.repository.DietRepository;
 
 import java.util.List;
