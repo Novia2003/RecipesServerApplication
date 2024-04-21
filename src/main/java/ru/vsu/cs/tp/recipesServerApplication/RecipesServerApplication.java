@@ -3,7 +3,6 @@ package ru.vsu.cs.tp.recipesServerApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import ru.vsu.cs.tp.recipesServerApplication.databaseInitialize.DatabaseInitializer;
 
 @SpringBootApplication
 public class RecipesServerApplication {
