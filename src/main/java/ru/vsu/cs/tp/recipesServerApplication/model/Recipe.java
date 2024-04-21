@@ -1,33 +1,35 @@
 package ru.vsu.cs.tp.recipesServerApplication.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Collection;
 
 @Entity
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Table(name = "preview_recipes")
-public class PreviewRecipe {
+@Table(name = "recipes")
+public class Recipe {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "preview_recipe_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_id_seq")
     private Long id;
 
     @Column(name = "recipe_id", nullable = false)
     private Long recipeId;
 
     @Column(name = "recipe_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private RecipeType recipeType;
 
     @Column(name = "number_views", nullable = false)
     private Long numberViews;
+
+    @OneToMany(mappedBy = "recipe")
+    @ToString.Exclude
+    private Collection<FavoriteRecipe> favoriteRecipes;
 }
