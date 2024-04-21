@@ -11,9 +11,11 @@ public class RecipesServerApplication {
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(RecipesServerApplication.class, args);
 
+		/*
 		DatabaseInitializer initializer = context.getBean(DatabaseInitializer.class);
-//		initializer.initializeIngredients();
-//		initializer.initializeMealTypes();
+		initializer.initializeIngredients();
+		initializer.initializeMealTypes();
 		initializer.initializeDiets();
+		 */
 	}
 }
