@@ -15,3 +15,8 @@ spring:
       ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+spoonacular:
+  url: https://api.spoonacular.com
+  api-key: eaea88e64ac24145ac40bd513a3e3084
+  scheme: apiKeyScheme
