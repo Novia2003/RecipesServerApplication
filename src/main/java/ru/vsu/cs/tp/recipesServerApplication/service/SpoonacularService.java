@@ -1,64 +1,139 @@
 package ru.vsu.cs.tp.recipesServerApplication.service;
 
-import com.spoonacular.IngredientsApi;
-import com.spoonacular.client.ApiException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.vsu.cs.tp.recipesServerApplication.integration.http.SpoonacularClient;
+import org.springframework.web.client.RestTemplate;
+import ru.vsu.cs.tp.recipesServerApplication.configuration.rest.SpoonacularProperties;
+import ru.vsu.cs.tp.recipesServerApplication.dto.api.ingredient.IngredientDTO;
+import ru.vsu.cs.tp.recipesServerApplication.dto.api.recipe.RecipeAllInfo;
+import ru.vsu.cs.tp.recipesServerApplication.dto.api.recipe.RecipePreview;
+import ru.vsu.cs.tp.recipesServerApplication.dto.api.recipe.RecipesPreview;
+import ru.vsu.cs.tp.recipesServerApplication.dto.api.step.StepDTO;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.ingredient.IngredientDTOResponse;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipeAllInfoResponse;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipePreviewResponse;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipesPreviewResponse;
+import ru.vsu.cs.tp.recipesServerApplication.model.RecipeType;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SpoonacularService {
 
-    private final IngredientsApi ingredientsApi;
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    public SpoonacularService(SpoonacularClient client) {
-        this.ingredientsApi = new IngredientsApi(client.getApiClient());
-    }
+    private final SpoonacularProperties properties;
 
-    public String getIngredientPossibleUnits(int id) {
-        BigDecimal amount = new BigDecimal("1.0"); // BigDecimal | The amount of this ingredient.
-        String unit = ""; // String | The unit for the given amount.
+    private final RecipeService recipeService;
 
+    private final FavoriteRecipeService favoriteRecipeService;
 
-        StringBuffer buffer = new StringBuffer();
+    private final DietService dietService;
 
+    public RecipeAllInfoResponse getRecipeInformation(Long id, String jwt) {
+        String resourceUrl = properties.getUrl() + "/recipes/" + id + "/information?apiKey=" + properties.getApiKey();
+        ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        RecipeAllInfo recipe;
         try {
-            List<String> units = ingredientsApi.getIngredientInformation(id, amount, unit).getPossibleUnits();
-
-            for (int i = 0; i < units.size() - 1; i++)
-                buffer.append(units.get(i)).append(", ");
-
-            if (!units.isEmpty())
-                buffer.append(units.get(units.size() - 1));
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#analyzeRecipe");
-            System.err.println("Status code: " + e.getCode());
-            System.err.println("Reason: " + e.getResponseBody());
-            System.err.println("Response headers: " + e.getResponseHeaders());
-            e.printStackTrace();
-        } catch (IllegalArgumentException exception) {
-            String response = exception.getMessage();
-            String json = response.substring(response.indexOf("{"));
-
-            try {
-                JSONObject jsonObject = new JSONObject(json);
-                JSONArray possibleUnits = jsonObject.getJSONArray("possibleUnits");
-
-                for (int i = 0; i < possibleUnits.length() - 1; i++)
-                    buffer.append(possibleUnits.getString(i)).append(", ");
-
-                if (!possibleUnits.isEmpty())
-                    buffer.append(possibleUnits.getString(possibleUnits.length() - 1));
-            } catch (JSONException e) {
-                throw new JSONException(e);
-            }
+            recipe = objectMapper.readValue(response.getBody(), RecipeAllInfo.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
 
-        return buffer.toString();
+        return getRecipeAllInfoResponse(recipe, jwt);
+    }
+
+    private RecipeAllInfoResponse getRecipeAllInfoResponse(RecipeAllInfo recipe, String jwt) {
+        RecipeAllInfoResponse allInfoResponse = new RecipeAllInfoResponse();
+        allInfoResponse.setId(recipe.getId());
+
+        recipeService.increaseNumberViews(recipe.getId(), RecipeType.FROM_API);
+
+        allInfoResponse.setTitle(recipe.getTitle());
+        allInfoResponse.setImage(recipe.getImage());
+        allInfoResponse.setReadyInMinutes(recipe.getReadyInMinutes());
+
+        List<IngredientDTOResponse> list = new ArrayList<>();
+        for (IngredientDTO ingredientDTO: recipe.getExtendedIngredients()) {
+            IngredientDTOResponse ingredientDTOResponse = new IngredientDTOResponse();
+
+            ingredientDTOResponse.setName(ingredientDTO.getName());
+            ingredientDTOResponse.setAmount(ingredientDTO.getAmount());
+            ingredientDTOResponse.setUnit(ingredientDTO.getUnit());
+
+            list.add(ingredientDTOResponse);
+        }
+
+        allInfoResponse.setExtendedIngredients(list);
+
+        List<String> steps = new ArrayList<>();
+        for (StepDTO stepDTO : recipe.getAnalyzedInstructions().get(0).getSteps())
+            steps.add(stepDTO.getStep());
+
+        allInfoResponse.setSteps(steps);
+        allInfoResponse.setIsUserRecipe(false);
+        allInfoResponse.setIsFavouriteRecipe(favoriteRecipeService.isRecipeFavourite(jwt, recipe.getId(), RecipeType.FROM_API));
+
+        return allInfoResponse;
+    }
+
+    public RecipesPreviewResponse getRecipes(String query, String type, String diet, String jwt) {
+        String resourceUrl = properties.getUrl() + "/recipes/complexSearch?apiKey=" + properties.getApiKey();
+
+        if (query != null)
+            resourceUrl += "&query=" + query;
+
+        if (type != null)
+            resourceUrl += "&type=" + type;
+
+        if (diet != null) {
+            resourceUrl += "&diet=" + diet;
+
+            if (query == null && type == null)
+                dietService.increaseNumberViews(diet);
+        }
+
+        ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        RecipesPreview recipes;
+
+        try {
+            recipes = objectMapper.readValue(response.getBody(), RecipesPreview.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return getRecipesPreviewResponse(recipes, jwt);
+    }
+
+    private RecipesPreviewResponse getRecipesPreviewResponse(RecipesPreview recipes, String jwt) {
+        RecipesPreviewResponse recipesPreviewResponse = new RecipesPreviewResponse();
+        List<RecipePreviewResponse> list = new ArrayList<>();
+
+        for (RecipePreview result: recipes.getResults()) {
+            RecipePreviewResponse recipePreviewResponse = new RecipePreviewResponse();
+
+            recipePreviewResponse.setId(result.getId());
+            recipePreviewResponse.setTitle(result.getTitle());
+            recipePreviewResponse.setImage(result.getImage());
+            recipePreviewResponse.setIsUserRecipe(false);
+            recipePreviewResponse.setIsFavouriteRecipe(favoriteRecipeService.isRecipeFavourite(jwt, result.getId(), RecipeType.FROM_API));
+
+            list.add(recipePreviewResponse);
+        }
+
+        recipesPreviewResponse.setResults(list);
+        return recipesPreviewResponse;
     }
 }

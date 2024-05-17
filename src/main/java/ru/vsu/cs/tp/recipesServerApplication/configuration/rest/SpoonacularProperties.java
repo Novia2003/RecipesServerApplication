@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @ConfigurationProperties(prefix = "spoonacular")
 public class SpoonacularProperties {
-
     private String url;
     private String apiKey;
-    private String scheme;
 }

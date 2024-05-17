@@ -13,6 +13,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @Setter
@@ -33,7 +35,7 @@ public class RecipeIngredientMeasurement {
     private Ingredient ingredient;
 
     @Column(nullable = false)
-    private Double quantity;
+    private BigDecimal quantity;
 
     @Column(nullable = false)
     private String measurementUnit;
