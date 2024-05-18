@@ -1,6 +1,9 @@
 package ru.vsu.cs.tp.recipesServerApplication.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.ingredient.IngredientDTOResponse;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipeAllInfoResponse;
@@ -71,15 +74,17 @@ public class FolkRecipeService {
         return response;
     }
 
-    public RecipesPreviewResponse getRecipes(String query, String jwt) {
+    public RecipesPreviewResponse getRecipes(String query, Integer page, Integer number, String jwt) {
         RecipesPreviewResponse response = new RecipesPreviewResponse();
 
-        List<FolkRecipe> recipes;
+        Page<FolkRecipe> recipes;
+
+        Pageable pageable = PageRequest.of(page, number);
 
         if (query == null)
-            recipes = folkRecipeRepository.findByIsApprovedTrue();
+            recipes = folkRecipeRepository.findByIsApprovedTrue(pageable);
         else
-            recipes = folkRecipeRepository.findByNameStartsWithIgnoreCaseAndIsApprovedTrue(query);
+            recipes = folkRecipeRepository.findByNameStartsWithIgnoreCaseAndIsApprovedTrue(query, pageable);
 
         List<RecipePreviewResponse> results = new ArrayList<>();
         for (FolkRecipe recipe : recipes) {

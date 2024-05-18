@@ -85,7 +85,7 @@ public class SpoonacularService {
         return allInfoResponse;
     }
 
-    public RecipesPreviewResponse getRecipes(String query, String type, String diet, String jwt) {
+    public RecipesPreviewResponse getRecipes(String query, String type, String diet, Integer page, Integer number, String jwt) {
         String resourceUrl = properties.getUrl() + "/recipes/complexSearch?apiKey=" + properties.getApiKey();
 
         if (query != null)
@@ -97,9 +97,13 @@ public class SpoonacularService {
         if (diet != null) {
             resourceUrl += "&diet=" + diet;
 
-            if (query == null && type == null)
+            if (query == null && type == null && page == 0)
                 dietService.increaseNumberViews(diet);
         }
+
+        resourceUrl += "&offset=" + (page * number);
+
+        resourceUrl += "&number=" + number;
 
         ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
 

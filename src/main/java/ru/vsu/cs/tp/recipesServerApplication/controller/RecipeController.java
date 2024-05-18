@@ -41,15 +41,17 @@ public class RecipeController {
             @RequestParam(required = false) String query,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String diet,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer number,
             @RequestHeader(required = false, name="token") String jwt,
             @RequestParam Boolean isUserRecipes
     ) {
         RecipesPreviewResponse recipes;
 
         if (isUserRecipes)
-            recipes = folkRecipeService.getRecipes(query, jwt);
+            recipes = folkRecipeService.getRecipes(query, page, number, jwt);
         else
-            recipes = spoonacularService.getRecipes(query, type, diet, jwt);
+            recipes = spoonacularService.getRecipes(query, type, diet, page, number, jwt);
 
         if (recipes == null) {
             return ResponseEntity.notFound().build();
