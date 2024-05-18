@@ -33,6 +33,9 @@ public class FolkRecipe {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private int readyInMinutes;
+
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
@@ -41,8 +44,8 @@ public class FolkRecipe {
     @JoinColumn(name = "meal_type_id", nullable = false)
     private MealType mealType;
 
-    @Column(columnDefinition = "BYTEA")
-    private byte[] image;
+    @Column
+    private String image;
 
     @Column(nullable = false)
     private Boolean isReviewedByAdmin;

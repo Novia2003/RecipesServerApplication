@@ -34,9 +34,9 @@ public class IngredientService {
         for (String[] row : rows) {
             Ingredient ingredient = new Ingredient();
             ingredient.setName(row[0].trim());
-            ingredient.setPossibleMeasurementUnits(
-                    spoonacularService.getIngredientPossibleUnits(Integer.parseInt(row[1].trim()))
-            );
+//            ingredient.setPossibleMeasurementUnits(
+//                    spoonacularService.getIngredientPossibleUnits(Integer.parseInt(row[1].trim()))
+//            );
 
             ingredientRepository.save(ingredient);
 
