@@ -103,4 +103,17 @@ public class FolkRecipeService {
 
         return response;
     }
+
+    public RecipePreviewResponse getFavouriteRecipePreview(Long id) {
+        FolkRecipe recipe = folkRecipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
+
+        RecipePreviewResponse recipePreviewResponse = new RecipePreviewResponse();
+        recipePreviewResponse.setId(recipe.getId());
+        recipePreviewResponse.setTitle(recipe.getName());
+        recipePreviewResponse.setImage(recipe.getImage());
+        recipePreviewResponse.setIsUserRecipe(true);
+        recipePreviewResponse.setIsFavouriteRecipe(true);
+
+        return recipePreviewResponse;
+    }
 }
