@@ -1,22 +1,25 @@
 package ru.vsu.cs.tp.recipesServerApplication.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.ingredient.AllIngredients;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.ingredient.IngredientWithUnitResponse;
 import ru.vsu.cs.tp.recipesServerApplication.model.Ingredient;
 import ru.vsu.cs.tp.recipesServerApplication.repository.IngredientRepository;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@RequiredArgsConstructor
 public class IngredientService {
 
-    @Autowired
-    private IngredientRepository ingredientRepository;
-    @Autowired
-    private SpoonacularService spoonacularService;
+    private final IngredientRepository ingredientRepository;
+
+    private final SpoonacularService spoonacularService;
 
     public void importIngredientsFromCsv(String filePath) {
         List<String[]> rows = new ArrayList<>();
@@ -46,5 +49,26 @@ public class IngredientService {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public AllIngredients getAllIngredients() {
+        List<IngredientWithUnitResponse> ingredients = new ArrayList<>();
+
+        for (Ingredient ingredient : ingredientRepository.findAll()) {
+            IngredientWithUnitResponse ingredientWithUnit = new IngredientWithUnitResponse();
+
+            ingredientWithUnit.setTitle(ingredient.getName());
+
+            List<String> units = new ArrayList<>();
+            Collections.addAll(units, ingredient.getPossibleMeasurementUnits().split(", "));
+            ingredientWithUnit.setUnits(units);
+
+            ingredients.add(ingredientWithUnit);
+        }
+
+        AllIngredients allIngredients = new AllIngredients();
+        allIngredients.setIngredients(ingredients);
+
+        return allIngredients;
     }
 }

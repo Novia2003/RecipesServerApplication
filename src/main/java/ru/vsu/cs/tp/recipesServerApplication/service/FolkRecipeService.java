@@ -5,14 +5,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.vsu.cs.tp.recipesServerApplication.dto.request.ingredient.IngredientDTORequest;
+import ru.vsu.cs.tp.recipesServerApplication.dto.request.recipe.UserRecipeRequest;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.ingredient.IngredientDTOResponse;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipeAllInfoResponse;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipePreviewResponse;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipesPreviewResponse;
 import ru.vsu.cs.tp.recipesServerApplication.model.*;
-import ru.vsu.cs.tp.recipesServerApplication.repository.FolkRecipeRepository;
-import ru.vsu.cs.tp.recipesServerApplication.repository.RecipeIngredientMeasurementRepository;
-import ru.vsu.cs.tp.recipesServerApplication.repository.StepRepository;
+import ru.vsu.cs.tp.recipesServerApplication.repository.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,6 +31,14 @@ public class FolkRecipeService {
     private final RecipeService recipeService;
 
     private final RecipeIngredientMeasurementRepository recipeIngredientMeasurementRepository;
+
+    private final MealTypeRepository mealTypeRepository;
+
+    private final IngredientRepository ingredientRepository;
+
+    private final JwtService jwtService;
+
+    private final UserRepository userRepository;
 
     public RecipeAllInfoResponse getRecipeInformation(Long id, String jwt) {
         FolkRecipe recipe = folkRecipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
@@ -102,5 +110,91 @@ public class FolkRecipeService {
         response.setResults(results);
 
         return response;
+    }
+
+    public RecipesPreviewResponse getFolkRecipes(String jwt, Integer page, Integer number) {
+        String email = jwtService.extractUsername(jwt);
+        if (email == null)
+            return null;
+
+        var user = userRepository.findByEmail(email);
+        if (user.isEmpty())
+            return null;
+
+        Pageable pageable = PageRequest.of(page, number);
+
+        Page<FolkRecipe> recipes = folkRecipeRepository.findByAuthorId(user.get().getId(), pageable);
+        List<RecipePreviewResponse> results = new ArrayList<>();
+
+        for (FolkRecipe recipe: recipes) {
+            RecipePreviewResponse result = new RecipePreviewResponse();
+
+            result.setId(recipe.getId());
+            result.setTitle(recipe.getName());
+            result.setImage(recipe.getImage());
+            result.setIsUserRecipe(true);
+            result.setIsFavouriteRecipe(favoriteRecipeService.isRecipeFavourite(jwt, recipe.getId(), RecipeType.FOLK));
+
+            results.add(result);
+        }
+
+        RecipesPreviewResponse response = new RecipesPreviewResponse();
+        response.setResults(results);
+
+        return response;
+    }
+
+    public boolean createUserRecipe(UserRecipeRequest recipeRequest, String jwt) {
+        FolkRecipe folkRecipe = new FolkRecipe();
+
+        folkRecipe.setName(recipeRequest.getTitle());
+        folkRecipe.setDescription(recipeRequest.getDescription());
+        folkRecipe.setReadyInMinutes(recipeRequest.getReadyInMinutes());
+
+        String email = jwtService.extractUsername(jwt);
+        if (email == null)
+            return false;
+
+        var user = userRepository.findByEmail(email);
+        if (user.isEmpty())
+            return false;
+
+        folkRecipe.setAuthor(user.get());
+
+        folkRecipe.setMealType(mealTypeRepository.findByName(recipeRequest.getCategory()));
+
+        folkRecipe.setImage(recipeRequest.getImage());
+        folkRecipe.setIsReviewedByAdmin(!recipeRequest.getIsPublish());
+        folkRecipe.setIsApproved(false);
+        folkRecipeRepository.save(folkRecipe);
+
+        for (IngredientDTORequest request : recipeRequest.getExtendedIngredients()) {
+            RecipeIngredientMeasurement recipeIngredientMeasurement = new RecipeIngredientMeasurement();
+
+            recipeIngredientMeasurement.setFolkRecipe(folkRecipe);
+
+            Ingredient ingredient = ingredientRepository.findByName(request.getName());
+
+            if (ingredient == null)
+                return false;
+
+            recipeIngredientMeasurement.setIngredient(ingredient);
+            recipeIngredientMeasurement.setQuantity(request.getAmount());
+            recipeIngredientMeasurement.setMeasurementUnit(request.getUnit());
+
+            recipeIngredientMeasurementRepository.save(recipeIngredientMeasurement);
+        }
+
+        for (int i = 0; i < recipeRequest.getSteps().size(); i++) {
+            Step step = new Step();
+
+            step.setFolkRecipe(folkRecipe);
+            step.setStepNumber(i);
+            step.setStep(recipeRequest.getSteps().get(i));
+
+            stepRepository.save(step);
+        }
+
+        return true;
     }
 }

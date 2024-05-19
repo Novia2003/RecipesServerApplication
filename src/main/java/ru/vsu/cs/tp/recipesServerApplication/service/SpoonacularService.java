@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.vsu.cs.tp.recipesServerApplication.configuration.rest.SpoonacularProperties;
 import ru.vsu.cs.tp.recipesServerApplication.dto.api.ingredient.IngredientDTO;
+import ru.vsu.cs.tp.recipesServerApplication.dto.api.recipe.RandomRecipe;
 import ru.vsu.cs.tp.recipesServerApplication.dto.api.recipe.RecipeAllInfo;
 import ru.vsu.cs.tp.recipesServerApplication.dto.api.recipe.RecipePreview;
 import ru.vsu.cs.tp.recipesServerApplication.dto.api.recipe.RecipesPreview;
@@ -139,5 +140,31 @@ public class SpoonacularService {
 
         recipesPreviewResponse.setResults(list);
         return recipesPreviewResponse;
+    }
+
+    public RecipePreviewResponse getRandomRecipe(String jwt) {
+        String resourceUrl = properties.getUrl() + "/recipes/random?apiKey=" + properties.getApiKey();
+        ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        RandomRecipe recipe;
+        try {
+            recipe = objectMapper.readValue(response.getBody(), RandomRecipe.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        RecipePreviewResponse recipePreviewResponse = new RecipePreviewResponse();
+
+        RecipePreview recipePreview = recipe.getRecipes().get(0);
+
+        recipePreviewResponse.setId(recipePreview.getId());
+        recipePreviewResponse.setTitle(recipePreview.getTitle());
+        recipePreviewResponse.setImage(recipePreview.getImage());
+        recipePreviewResponse.setIsUserRecipe(false);
+        recipePreviewResponse.setIsFavouriteRecipe(favoriteRecipeService.isRecipeFavourite(jwt, recipePreview.getId(), RecipeType.FROM_API));
+
+        return recipePreviewResponse;
     }
 }
