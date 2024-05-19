@@ -13,10 +13,7 @@ import ru.vsu.cs.tp.recipesServerApplication.configuration.rest.SpoonacularPrope
 import ru.vsu.cs.tp.recipesServerApplication.dto.api.recipe.RecipePreview;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipePreviewResponse;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipesPreviewResponse;
-import ru.vsu.cs.tp.recipesServerApplication.model.FavoriteRecipe;
-import ru.vsu.cs.tp.recipesServerApplication.model.FolkRecipe;
-import ru.vsu.cs.tp.recipesServerApplication.model.Recipe;
-import ru.vsu.cs.tp.recipesServerApplication.model.RecipeType;
+import ru.vsu.cs.tp.recipesServerApplication.model.*;
 import ru.vsu.cs.tp.recipesServerApplication.repository.FavoriteRecipeRepository;
 import ru.vsu.cs.tp.recipesServerApplication.repository.FolkRecipeRepository;
 import ru.vsu.cs.tp.recipesServerApplication.repository.RecipeRepository;
@@ -53,6 +50,9 @@ public class FavoriteRecipeService {
 
         var user = userRepository.findByEmail(email);
         if (user.isEmpty())
+            return false;
+
+        if (user.get().getRole() != Role.USER)
             return false;
 
         Recipe recipe = recipeRepository.findByRecipeIdAndRecipeType(recipe_id, type);

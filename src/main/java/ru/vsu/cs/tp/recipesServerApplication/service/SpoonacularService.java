@@ -142,7 +142,7 @@ public class SpoonacularService {
         return recipesPreviewResponse;
     }
 
-    public RecipePreviewResponse getRandomRecipe() {
+    public RecipePreviewResponse getRandomRecipe(String jwt) {
         String resourceUrl = properties.getUrl() + "/recipes/random?apiKey=" + properties.getApiKey();
         ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
 
@@ -163,7 +163,7 @@ public class SpoonacularService {
         recipePreviewResponse.setTitle(recipePreview.getTitle());
         recipePreviewResponse.setImage(recipePreview.getImage());
         recipePreviewResponse.setIsUserRecipe(false);
-        recipePreviewResponse.setIsFavouriteRecipe(false);
+        recipePreviewResponse.setIsFavouriteRecipe(favoriteRecipeService.isRecipeFavourite(jwt, recipePreview.getId(), RecipeType.FROM_API));
 
         return recipePreviewResponse;
     }

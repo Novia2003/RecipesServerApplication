@@ -62,8 +62,10 @@ public class RecipeController {
 
 
     @GetMapping("/random")
-    public ResponseEntity<RecipePreviewResponse> getRandomRecipe() {
-        RecipePreviewResponse recipe = spoonacularService.getRandomRecipe();
+    public ResponseEntity<RecipePreviewResponse> getRandomRecipe(
+            @RequestHeader(required = false, name="token") String jwt
+    ) {
+        RecipePreviewResponse recipe = spoonacularService.getRandomRecipe(jwt);
 
         if (recipe == null) {
             return ResponseEntity.notFound().build();
