@@ -140,27 +140,4 @@ public class SpoonacularService {
         recipesPreviewResponse.setResults(list);
         return recipesPreviewResponse;
     }
-
-    public RecipePreviewResponse getFavouriteRecipePreview(Long id) {
-        String resourceUrl = properties.getUrl() + "/recipes/" + id + "/information?apiKey=" + properties.getApiKey();
-        ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        RecipePreview recipe;
-        try {
-            recipe = objectMapper.readValue(response.getBody(), RecipePreview.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        RecipePreviewResponse recipePreviewResponse = new RecipePreviewResponse();
-        recipePreviewResponse.setId(recipe.getId());
-        recipePreviewResponse.setTitle(recipe.getTitle());
-        recipePreviewResponse.setImage(recipe.getImage());
-        recipePreviewResponse.setIsUserRecipe(false);
-        recipePreviewResponse.setIsFavouriteRecipe(true);
-
-        return recipePreviewResponse;
-    }
 }
