@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipeAllInfoResponse;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipePreviewResponse;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipesPreviewResponse;
 import ru.vsu.cs.tp.recipesServerApplication.service.FolkRecipeService;
 import ru.vsu.cs.tp.recipesServerApplication.service.SpoonacularService;
@@ -57,5 +58,16 @@ public class RecipeController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(recipes);
+    }
+
+
+    @GetMapping("/random")
+    public ResponseEntity<RecipePreviewResponse> getRandomRecipe() {
+        RecipePreviewResponse recipe = spoonacularService.getRandomRecipe();
+
+        if (recipe == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(recipe);
     }
 }
