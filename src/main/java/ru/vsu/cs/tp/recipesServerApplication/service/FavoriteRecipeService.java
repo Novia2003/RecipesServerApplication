@@ -74,10 +74,11 @@ public class FavoriteRecipeService {
 
         Pageable pageable = PageRequest.of(page, number);
 
-        Page<Recipe> recipes = favoriteRecipeRepository.findRecipesByUserId(user.get().getId(), pageable);
+        Page<FavoriteRecipe> favoriteRecipes = favoriteRecipeRepository.findByUserId(user.get().getId(), pageable);
         List<RecipePreviewResponse> results = new ArrayList<>();
 
-        for (Recipe recipe: recipes) {
+        for (FavoriteRecipe favoriteRecipe : favoriteRecipes) {
+            Recipe recipe = favoriteRecipe.getRecipe();
             RecipePreviewResponse result;
 
             if (recipe.getRecipeType() == RecipeType.FROM_API)
@@ -130,7 +131,7 @@ public class FavoriteRecipeService {
         return recipePreviewResponse;
     }
 
-    public boolean addRecipeToFavorites(Long recipe_id, Boolean isUserRecipes, String jwt) {
+    public boolean addRecipeToFavorites(Long recipe_id, Boolean isUserRecipe, String jwt) {
         String email = jwtService.extractUsername(jwt);
         if (email == null)
             return false;
@@ -139,7 +140,7 @@ public class FavoriteRecipeService {
         if (user.isEmpty())
             return false;
 
-        RecipeType type = (isUserRecipes) ? RecipeType.FOLK : RecipeType.FROM_API;
+        RecipeType type = (isUserRecipe) ? RecipeType.FOLK : RecipeType.FROM_API;
         Recipe recipe = recipeRepository.findByRecipeIdAndRecipeType(recipe_id, type);
 
         if (recipe == null)
@@ -153,7 +154,7 @@ public class FavoriteRecipeService {
         return true;
     }
 
-    public boolean removeRecipeFromFavorites(Long recipe_id, Boolean isUserRecipes, String jwt) {
+    public boolean removeRecipeFromFavorites(Long recipe_id, Boolean isUserRecipe, String jwt) {
         String email = jwtService.extractUsername(jwt);
         if (email == null)
             return false;
@@ -162,7 +163,7 @@ public class FavoriteRecipeService {
         if (user.isEmpty())
             return false;
 
-        RecipeType type = (isUserRecipes) ? RecipeType.FOLK : RecipeType.FROM_API;
+        RecipeType type = (isUserRecipe) ? RecipeType.FOLK : RecipeType.FROM_API;
         Recipe recipe = recipeRepository.findByRecipeIdAndRecipeType(recipe_id, type);
 
         if (recipe == null)

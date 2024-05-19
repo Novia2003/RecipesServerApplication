@@ -33,9 +33,9 @@ public class FavoriteRecipeController {
     public ResponseEntity<?> addRecipeToFavorites(
             @PathVariable("recipeId") Long recipeId,
             @RequestHeader(name="token") String jwt,
-            @RequestParam Boolean isUserRecipes
+            @RequestParam Boolean isUserRecipe
     ) {
-        boolean result = favoriteRecipeService.addRecipeToFavorites(recipeId, isUserRecipes, jwt);
+        boolean result = favoriteRecipeService.addRecipeToFavorites(recipeId, isUserRecipe, jwt);
 
         if (!result) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add recipe to favorites");
@@ -48,9 +48,9 @@ public class FavoriteRecipeController {
     public ResponseEntity<?> removeRecipeFromFavorites(
             @PathVariable("recipeId") Long recipeId,
             @RequestHeader(name="token") String jwt,
-            @RequestParam Boolean isUserRecipes
+            @RequestParam Boolean isUserRecipe
     ) {
-        boolean result = favoriteRecipeService.removeRecipeFromFavorites(recipeId, isUserRecipes, jwt);
+        boolean result = favoriteRecipeService.removeRecipeFromFavorites(recipeId, isUserRecipe, jwt);
 
         if (!result) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to remove recipe from favorites");
