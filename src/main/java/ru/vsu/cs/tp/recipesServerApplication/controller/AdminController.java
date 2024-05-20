@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipesPreviewResponse;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.statistic.StatisticResponse;
 import ru.vsu.cs.tp.recipesServerApplication.service.FolkRecipeService;
+import ru.vsu.cs.tp.recipesServerApplication.service.StatisticService;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -14,11 +16,18 @@ public class AdminController {
 
     private final FolkRecipeService folkRecipeService;
 
-//    @GetMapping("/statistic")
-//    public ResponseEntity<AllDiets> getStatistic() {
-//
-//        return ResponseEntity.ok(diets);
-//    }
+    private final StatisticService statisticService;
+
+    @GetMapping("/statistic")
+    public ResponseEntity<StatisticResponse> getStatistic() {
+        StatisticResponse response = statisticService.getStatistic();
+
+        if (response == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/recipesToCheck")
     public ResponseEntity<RecipesPreviewResponse> getRecipesToCheck(

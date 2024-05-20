@@ -167,4 +167,20 @@ public class SpoonacularService {
 
         return recipePreviewResponse;
     }
+
+    public String getRecipeTitle(Long id) {
+        String resourceUrl = properties.getUrl() + "/recipes/" + id + "/information?apiKey=" + properties.getApiKey();
+        ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        RecipeAllInfo recipe;
+        try {
+            recipe = objectMapper.readValue(response.getBody(), RecipeAllInfo.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return recipe.getTitle();
+    }
 }
