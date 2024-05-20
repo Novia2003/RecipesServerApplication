@@ -26,8 +26,9 @@ public class Recipe {
     @Enumerated(EnumType.STRING)
     private RecipeType recipeType;
 
-    @Column(name = "number_views", nullable = false)
-    private Long numberViews;
+    @OneToMany(mappedBy = "recipe")
+    @ToString.Exclude
+    private Collection<RecipeView> recipeViews;
 
     @OneToMany(mappedBy = "recipe")
     @ToString.Exclude

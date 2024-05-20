@@ -25,7 +25,23 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**")
+                .requestMatchers(AUTH_WHITELIST)
+                .permitAll()
+                .requestMatchers("/api/v1/admin/**")
+                .hasAuthority("ADMINISTRATOR")
+                .requestMatchers("/api/v1/recipes/**")
+                .permitAll()
+                .requestMatchers("/api/v1/diets/**")
+                .permitAll()
+                .requestMatchers("/api/v1/favouriteRecipes/**")
+                .hasAuthority("USER")
+                .requestMatchers("/api/v1/userRecipes/**")
+                .hasAuthority("USER")
+                .requestMatchers("/api/v1/ingredients/**")
+                .permitAll()
+                .requestMatchers("/api/v1/mealTypes/**")
+                .permitAll()
+                .requestMatchers("/api/v1/recipes/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -38,4 +54,12 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
+    private static final String[] AUTH_WHITELIST = {
+            "/api/v1/auth/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs.yaml",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 }

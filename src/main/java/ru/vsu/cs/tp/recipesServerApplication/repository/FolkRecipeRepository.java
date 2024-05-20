@@ -11,4 +11,6 @@ public interface FolkRecipeRepository extends JpaRepository<FolkRecipe, Long> {
     Page<FolkRecipe> findByNameStartsWithIgnoreCaseAndIsApprovedTrue(String query, Pageable pageable);
 
     Page<FolkRecipe> findByAuthorId(Long authorId, Pageable pageable);
+
+    Page<FolkRecipe> findByIsReviewedByAdminFalse(Pageable pageable);
 }

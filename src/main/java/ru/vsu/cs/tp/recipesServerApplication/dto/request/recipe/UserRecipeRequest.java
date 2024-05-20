@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class UserRecipeRequest {
     private String title;
-    private String image;
+    private byte[] image;
     private String description;
     private String category;
     private int readyInMinutes;

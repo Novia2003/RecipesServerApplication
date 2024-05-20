@@ -17,6 +17,7 @@ import ru.vsu.cs.tp.recipesServerApplication.repository.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -163,7 +164,13 @@ public class FolkRecipeService {
 
         folkRecipe.setMealType(mealTypeRepository.findByName(recipeRequest.getCategory()));
 
-        folkRecipe.setImage(recipeRequest.getImage());
+        /*
+        byte[] image = recipeRequest.getImage();
+        String linkToImage = null;
+         */
+
+        folkRecipe.setImage(null);
+
         folkRecipe.setIsReviewedByAdmin(!recipeRequest.getIsPublish());
         folkRecipe.setIsApproved(false);
         folkRecipeRepository.save(folkRecipe);
@@ -194,6 +201,47 @@ public class FolkRecipeService {
 
             stepRepository.save(step);
         }
+
+        return true;
+    }
+
+    public RecipesPreviewResponse getRecipesToCheck(Integer page, Integer number) {
+        Pageable pageable = PageRequest.of(page, number);
+
+        Page<FolkRecipe> recipes = folkRecipeRepository.findByIsReviewedByAdminFalse(pageable);
+
+        List<RecipePreviewResponse> results = new ArrayList<>();
+
+        for (FolkRecipe recipe: recipes) {
+            RecipePreviewResponse result = new RecipePreviewResponse();
+
+            result.setId(recipe.getId());
+            result.setTitle(recipe.getName());
+            result.setImage(recipe.getImage());
+            result.setIsUserRecipe(true);
+            result.setIsFavouriteRecipe(false);
+
+            results.add(result);
+        }
+
+        RecipesPreviewResponse response = new RecipesPreviewResponse();
+        response.setResults(results);
+
+        return response;
+    }
+
+    public boolean checkRecipe(Long recipeId, Boolean isApproved) {
+        Optional<FolkRecipe> folkRecipeOptional = folkRecipeRepository.findById(recipeId);
+
+        if (folkRecipeOptional.isEmpty())
+            return false;
+
+        FolkRecipe folkRecipe = folkRecipeOptional.get();
+
+        folkRecipe.setIsReviewedByAdmin(true);
+        folkRecipe.setIsApproved(isApproved);
+
+        folkRecipeRepository.save(folkRecipe);
 
         return true;
     }
