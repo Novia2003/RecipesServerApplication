@@ -164,7 +164,13 @@ public class FolkRecipeService {
 
         folkRecipe.setMealType(mealTypeRepository.findByName(recipeRequest.getCategory()));
 
-        folkRecipe.setImage(recipeRequest.getImage());
+        /*
+        byte[] image = recipeRequest.getImage();
+        String linkToImage = null;
+         */
+
+        folkRecipe.setImage(null);
+
         folkRecipe.setIsReviewedByAdmin(!recipeRequest.getIsPublish());
         folkRecipe.setIsApproved(false);
         folkRecipeRepository.save(folkRecipe);

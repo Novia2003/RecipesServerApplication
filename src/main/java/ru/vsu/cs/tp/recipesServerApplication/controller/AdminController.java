@@ -1,5 +1,7 @@
 package ru.vsu.cs.tp.recipesServerApplication.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import ru.vsu.cs.tp.recipesServerApplication.service.StatisticService;
 @RestController
 @RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
+@Tag(name = "AdminController", description = "The functions of the administrator")
 public class AdminController {
 
     private final FolkRecipeService folkRecipeService;
@@ -19,6 +22,7 @@ public class AdminController {
     private final StatisticService statisticService;
 
     @GetMapping("/statistic")
+    @Operation(description = "Getting statistical data")
     public ResponseEntity<StatisticResponse> getStatistic() {
         StatisticResponse response = statisticService.getStatistic();
 
@@ -30,6 +34,7 @@ public class AdminController {
     }
 
     @GetMapping("/recipesToCheck")
+    @Operation(description = "Getting a list of user recipes to check")
     public ResponseEntity<RecipesPreviewResponse> getRecipesToCheck(
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer number
@@ -43,6 +48,7 @@ public class AdminController {
     }
 
     @PostMapping("/recipesToCheck/{recipeId}")
+    @Operation(description = "Approval/disapproval of the recipe")
     public ResponseEntity<?> checkRecipe(
             @PathVariable("recipeId") Long recipeId,
             @RequestParam Boolean isApproved
