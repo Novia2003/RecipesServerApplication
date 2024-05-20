@@ -21,7 +21,7 @@ public class StatisticService {
 
     private final RecipeService recipeService;
 
-    private SpoonacularService spoonacularService;
+    private final SpoonacularService spoonacularService;
 
     public StatisticResponse getStatistic() {
         StatisticResponse response = new StatisticResponse();
@@ -41,12 +41,12 @@ public class StatisticService {
             response.setPopularRecipe("There is no data for the last month");
         else
             if (recipe.getRecipeType() == RecipeType.FOLK) {
-                Optional<FolkRecipe> folkRecipeOptional = folkRecipeRepository.findById(recipe.getId());
+                Optional<FolkRecipe> folkRecipeOptional = folkRecipeRepository.findById(recipe.getRecipeId());
 
                 if (folkRecipeOptional.isEmpty()) response.setPopularRecipe("There is no data for the last month");
                 else response.setPopularRecipe(folkRecipeOptional.get().getName());
 
-            } else response.setPopularRecipe(spoonacularService.getRecipeTitle(recipe.getId()));
+            } else response.setPopularRecipe(spoonacularService.getRecipeTitle(recipe.getRecipeId()));
 
         return response;
     }
