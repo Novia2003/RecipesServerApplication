@@ -9,6 +9,7 @@ import java.util.List;
 public class UserRecipeRequest {
     private String title;
     private byte[] image;
+    private String imageExtension;
     private String description;
     private String category;
     private int readyInMinutes;

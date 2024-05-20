@@ -41,6 +41,8 @@ public class FolkRecipeService {
 
     private final UserRepository userRepository;
 
+    private final ImageService imageService;
+
     public RecipeAllInfoResponse getRecipeInformation(Long id, String jwt) {
         FolkRecipe recipe = folkRecipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
 
@@ -164,12 +166,7 @@ public class FolkRecipeService {
 
         folkRecipe.setMealType(mealTypeRepository.findByName(recipeRequest.getCategory()));
 
-        /*
-        byte[] image = recipeRequest.getImage();
-        String linkToImage = null;
-         */
-
-        folkRecipe.setImage(null);
+        folkRecipe.setImage(imageService.upload(recipeRequest.getImage(), recipeRequest.getImageExtension()));
 
         folkRecipe.setIsReviewedByAdmin(!recipeRequest.getIsPublish());
         folkRecipe.setIsApproved(false);

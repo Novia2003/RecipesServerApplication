@@ -10,11 +10,13 @@ import ru.vsu.cs.tp.recipesServerApplication.service.DietService;
 import ru.vsu.cs.tp.recipesServerApplication.service.MealTypeService;
 import ru.vsu.cs.tp.recipesServerApplication.service.SpoonacularService;
 
+import java.io.IOException;
+
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "Recipes API", version = "1.0"))
 public class RecipesServerApplication {
 
-	public static void main(String[] args) throws JsonProcessingException {
+	public static void main(String[] args) throws IOException {
 		ApplicationContext context = SpringApplication.run(RecipesServerApplication.class, args);
 		/*
 		DatabaseInitializer initializer = context.getBean(DatabaseInitializer.class);
@@ -32,6 +34,29 @@ public class RecipesServerApplication {
 		var result3 = dietService.getAllDiets();
 		var result4 = mealTypeService.getAllMealTypes();
 
-		System.out.println();
+//		ImageService imageService = context.getBean(ImageService.class);
+//		File file = new File("C:\\Users\\vyach\\IdeaProjects\\ImageByteArray\\src\\029.jpg");
+//
+//		String image = null;
+//
+//		try {
+//			byte[] fileBytes = convertFileToByteArray(file);
+//			image = imageService.upload(fileBytes, "png");
+//			System.out.println("File successfully converted to byte array. Length: " + fileBytes.length);
+//		} catch (IOException e) {
+//			System.err.println("Error converting file to byte array: " + e.getMessage());
+//		}
+//
+//		System.out.println(image);
 	}
+
+//	public static byte[] convertFileToByteArray(File file) throws IOException {
+//		// Проверка на существование файла
+//		if (!file.exists()) {
+//			throw new IOException("File not found: " + file.getAbsolutePath());
+//		}
+//
+//		// Чтение файла в массив байт
+//		return Files.readAllBytes(file.toPath());
+//	}
 }
