@@ -23,7 +23,9 @@ public class AdminController {
 
     @GetMapping("/statistic")
     @Operation(description = "Getting statistical data")
-    public ResponseEntity<StatisticResponse> getStatistic() {
+    public ResponseEntity<StatisticResponse> getStatistic(
+            @RequestHeader("Authorization") String token
+    ) {
         StatisticResponse response = statisticService.getStatistic();
 
         if (response == null) {
@@ -37,7 +39,8 @@ public class AdminController {
     @Operation(description = "Getting a list of user recipes to check")
     public ResponseEntity<RecipesPreviewResponse> getRecipesToCheck(
             @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "10") Integer number
+            @RequestParam(required = false, defaultValue = "10") Integer number,
+            @RequestHeader("Authorization") String token
     ) {
         RecipesPreviewResponse response = folkRecipeService.getRecipesToCheck(page, number);
 
@@ -51,7 +54,8 @@ public class AdminController {
     @Operation(description = "Approval/disapproval of the recipe")
     public ResponseEntity<?> checkRecipe(
             @PathVariable("recipeId") Long recipeId,
-            @RequestParam Boolean isApproved
+            @RequestParam Boolean isApproved,
+            @RequestHeader("Authorization") String token
     ) {
         boolean result = folkRecipeService.checkRecipe(recipeId, isApproved);
 

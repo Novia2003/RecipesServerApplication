@@ -4,9 +4,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/recipes_db
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://147.45.151.147:5432/default_db
+    username: gen_user
+    password: iL~\=1P0/!Ktnj
 
   jpa:
     show-sql: true
@@ -19,3 +19,9 @@ spring:
 spoonacular:
   url: https://api.spoonacular.com
   api-key: eaea88e64ac24145ac40bd513a3e3084
+
+minio:
+  bucket: images
+  url: http://92.255.76.152:9000
+  accessKey: minioadmin
+  secretKey: minioadmin

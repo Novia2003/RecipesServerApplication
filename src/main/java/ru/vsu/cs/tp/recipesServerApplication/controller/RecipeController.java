@@ -42,7 +42,7 @@ public class RecipeController {
     }
 
     @GetMapping("/complexSearch")
-    @Operation(description = "Search for recipes")
+    @Operation(description = "Search for recipes:)")
     public ResponseEntity<RecipesPreviewResponse> getRecipes(
             @RequestParam(required = false) String query,
             @RequestParam(required = false) String type,
