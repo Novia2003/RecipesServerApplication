@@ -7,10 +7,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import ru.vsu.cs.tp.recipesServerApplication.service.DietService;
+import ru.vsu.cs.tp.recipesServerApplication.service.ImageService;
 import ru.vsu.cs.tp.recipesServerApplication.service.MealTypeService;
 import ru.vsu.cs.tp.recipesServerApplication.service.SpoonacularService;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "Recipes API", version = "1.0"))
@@ -34,14 +37,14 @@ public class RecipesServerApplication {
 		var result3 = dietService.getAllDiets();
 		var result4 = mealTypeService.getAllMealTypes();
 
-//		ImageService imageService = context.getBean(ImageService.class);
-//		File file = new File("C:\\Users\\vyach\\IdeaProjects\\ImageByteArray\\src\\029.jpg");
-//
-//		String image = null;
-//
+		ImageService imageService = context.getBean(ImageService.class);
+		File file = new File("C:\\Users\\vyach\\IdeaProjects\\ImageByteArray\\src\\029.jpg");
+
+		String image = null;
+
 //		try {
 //			byte[] fileBytes = convertFileToByteArray(file);
-//			image = imageService.upload(fileBytes, "png");
+//			image = imageService.upload(fileBytes, "jpeg");
 //			System.out.println("File successfully converted to byte array. Length: " + fileBytes.length);
 //		} catch (IOException e) {
 //			System.err.println("Error converting file to byte array: " + e.getMessage());
@@ -50,13 +53,13 @@ public class RecipesServerApplication {
 //		System.out.println(image);
 	}
 
-//	public static byte[] convertFileToByteArray(File file) throws IOException {
-//		// Проверка на существование файла
-//		if (!file.exists()) {
-//			throw new IOException("File not found: " + file.getAbsolutePath());
-//		}
-//
-//		// Чтение файла в массив байт
-//		return Files.readAllBytes(file.toPath());
-//	}
+	public static byte[] convertFileToByteArray(File file) throws IOException {
+		// Проверка на существование файла
+		if (!file.exists()) {
+			throw new IOException("File not found: " + file.getAbsolutePath());
+		}
+
+		// Чтение файла в массив байт
+		return Files.readAllBytes(file.toPath());
+	}
 }
