@@ -5,8 +5,6 @@ networks:
     driver: bridge
 
 volumes:
-  db-data:
-    driver: local
   minio-data:
     driver: local
 
@@ -18,20 +16,9 @@ services:
     networks:
       - app-network
     depends_on:
-      - db
       - minio
     ports:
       - '8080:8080'
-
-  db:
-    image: postgres/postgres:latest
-    container_name: postgres
-    networks:
-      - app-network
-    environment:
-      - POSTGRES_USER=jdbc:postgresql://localhost:5432/recipes_db
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=1234
 
   minio:
     image: minio/minio:latest
