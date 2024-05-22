@@ -1,6 +1,7 @@
 package ru.vsu.cs.tp.recipesServerApplication.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import ru.vsu.cs.tp.recipesServerApplication.service.FavoriteRecipeService;
 @RequestMapping("/api/v1/favouriteRecipes")
 @RequiredArgsConstructor
 @Tag(name = "FavoriteRecipeController", description = "Functions for working with recipes from favorites")
+@SecurityRequirement(name = "bearerAuth")
 public class FavoriteRecipeController {
 
     private final FavoriteRecipeService favoriteRecipeService;
