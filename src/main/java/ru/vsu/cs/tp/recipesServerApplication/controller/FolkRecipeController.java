@@ -1,6 +1,7 @@
 package ru.vsu.cs.tp.recipesServerApplication.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import ru.vsu.cs.tp.recipesServerApplication.service.FolkRecipeService;
 @RequestMapping("/api/v1/userRecipes")
 @RequiredArgsConstructor
 @Tag(name = "FolkRecipeController", description = "Functions for working with user recipes")
+@SecurityRequirement(name = "bearerAuth")
 public class FolkRecipeController {
 
     private final FolkRecipeService folkRecipeService;
