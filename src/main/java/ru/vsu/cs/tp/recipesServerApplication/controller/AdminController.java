@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.vsu.cs.tp.recipesServerApplication.dto.response.email.EmailResponse;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipesPreviewResponse;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.statistic.StatisticResponse;
+import ru.vsu.cs.tp.recipesServerApplication.service.EmailService;
 import ru.vsu.cs.tp.recipesServerApplication.service.FolkRecipeService;
 import ru.vsu.cs.tp.recipesServerApplication.service.StatisticService;
 
@@ -22,6 +24,8 @@ public class AdminController {
     private final FolkRecipeService folkRecipeService;
 
     private final StatisticService statisticService;
+
+    private final EmailService emailService;
 
     @GetMapping("/statistic")
     @Operation(description = "Getting statistical data")
@@ -61,5 +65,18 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to remove recipe from favorites");
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/email")
+    @Operation(description = "Getting the administrator's email")
+    public ResponseEntity<EmailResponse> getAdminEmail(
+            @RequestHeader(name="token") String jwt
+    ) {
+        EmailResponse response = emailService.getEmail(jwt);
+
+        if (response == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 }
