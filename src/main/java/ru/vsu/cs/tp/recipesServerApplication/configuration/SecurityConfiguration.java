@@ -37,8 +37,6 @@ public class SecurityConfiguration {
                 .hasAuthority("USER")
                 .requestMatchers("/api/v1/userRecipes/**")
                 .hasAuthority("USER")
-                .requestMatchers("/api/v1/user/**")
-                .hasAuthority("USER")
                 .requestMatchers("/api/v1/ingredients/**")
                 .permitAll()
                 .requestMatchers("/api/v1/mealTypes/**")
