@@ -11,7 +11,7 @@ import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipesPreviewR
 import ru.vsu.cs.tp.recipesServerApplication.service.FavoriteRecipeService;
 
 @RestController
-@RequestMapping("/api/v1/favouriteRecipes")
+@RequestMapping("/api/v1/favoriteRecipes")
 @RequiredArgsConstructor
 @Tag(name = "FavoriteRecipeController", description = "Functions for working with recipes from favorites")
 @SecurityRequirement(name = "bearerAuth")
