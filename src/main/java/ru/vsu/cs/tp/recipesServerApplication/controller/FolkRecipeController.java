@@ -14,7 +14,7 @@ import ru.vsu.cs.tp.recipesServerApplication.service.FolkRecipeService;
 @RestController
 @RequestMapping("/api/v1/userRecipes")
 @RequiredArgsConstructor
-@Tag(name = "FolkRecipeController", description = "Functions for working with user recipes")
+@Tag(name = "UserRecipeController", description = "Functions for working with user recipes")
 @SecurityRequirement(name = "bearerAuth")
 public class FolkRecipeController {
 

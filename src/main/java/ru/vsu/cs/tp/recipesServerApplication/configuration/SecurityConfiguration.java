@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                 .permitAll()
                 .requestMatchers("/api/v1/diets/**")
                 .permitAll()
-                .requestMatchers("/api/v1/favouriteRecipes/**")
+                .requestMatchers("/api/v1/favoriteRecipes/**")
                 .hasAuthority("USER")
                 .requestMatchers("/api/v1/userRecipes/**")
                 .hasAuthority("USER")

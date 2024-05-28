@@ -62,6 +62,11 @@ public class SpoonacularService {
         allInfoResponse.setImage(recipe.getImage());
         allInfoResponse.setReadyInMinutes(recipe.getReadyInMinutes());
 
+        if (recipe.getDishTypes().isEmpty())
+            allInfoResponse.setType(null);
+        else
+            allInfoResponse.setType(recipe.getDishTypes().get(0));
+
         List<IngredientDTOResponse> list = new ArrayList<>();
         for (IngredientDTO ingredientDTO: recipe.getExtendedIngredients()) {
             IngredientDTOResponse ingredientDTOResponse = new IngredientDTOResponse();

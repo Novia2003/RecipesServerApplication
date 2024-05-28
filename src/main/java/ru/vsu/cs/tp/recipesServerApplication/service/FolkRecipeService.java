@@ -56,6 +56,8 @@ public class FolkRecipeService {
         response.setReadyInMinutes(recipe.getReadyInMinutes());
         response.setImage(recipe.getImage());
 
+        response.setType(recipe.getMealType().getName());
+
         List<IngredientDTOResponse> extendedIngredients = new ArrayList<>();
         List<RecipeIngredientMeasurement> recipeIngredientMeasurements = recipeIngredientMeasurementRepository.findByFolkRecipeId(recipe.getId());
 
@@ -166,7 +168,10 @@ public class FolkRecipeService {
 
         folkRecipe.setMealType(mealTypeRepository.findByName(recipeRequest.getCategory()));
 
-        folkRecipe.setImage(imageService.upload(recipeRequest.getImage(), recipeRequest.getImageExtension()));
+        if (recipeRequest.getImage() == null || recipeRequest.getImageExtension() == null)
+            folkRecipe.setImage(null);
+        else
+            folkRecipe.setImage(imageService.upload(recipeRequest.getImage(), recipeRequest.getImageExtension()));
 
         folkRecipe.setIsReviewedByAdmin(!recipeRequest.getIsPublish());
         folkRecipe.setIsApproved(false);

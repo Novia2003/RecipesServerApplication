@@ -13,6 +13,7 @@ public class RecipeAllInfo {
     private Long id;
     private String title;
     private String image;
+    private List<String> dishTypes;
     private int readyInMinutes;
     private List<IngredientDTO> extendedIngredients;
     private List<AnalyzedInstructionsDTO> analyzedInstructions;
