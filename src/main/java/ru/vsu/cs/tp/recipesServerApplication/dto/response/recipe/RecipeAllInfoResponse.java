@@ -12,6 +12,7 @@ public class RecipeAllInfoResponse {
     private String image;
     private String description;
     private int readyInMinutes;
+    private String type;
     private List<IngredientDTOResponse> extendedIngredients;
     private List<String> steps;
     private Boolean isUserRecipe;

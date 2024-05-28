@@ -56,6 +56,8 @@ public class FolkRecipeService {
         response.setReadyInMinutes(recipe.getReadyInMinutes());
         response.setImage(recipe.getImage());
 
+        response.setType(recipe.getMealType().getName());
+
         List<IngredientDTOResponse> extendedIngredients = new ArrayList<>();
         List<RecipeIngredientMeasurement> recipeIngredientMeasurements = recipeIngredientMeasurementRepository.findByFolkRecipeId(recipe.getId());
 
