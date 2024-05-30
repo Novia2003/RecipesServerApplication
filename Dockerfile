@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine
+FROM mcr.microsoft.com/openjdk/jdk:17-mariner
 
 WORKDIR /app
 
