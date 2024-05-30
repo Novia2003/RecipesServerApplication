@@ -1,4 +1,4 @@
-FROM openjdk:17.0.2-jdk-slim-buster
+FROM mcr.microsoft.com/openjdk/jdk:17-mariner
 
 WORKDIR /app
 
