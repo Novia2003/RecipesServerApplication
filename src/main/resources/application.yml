@@ -18,7 +18,7 @@ spring:
 
 spoonacular:
   url: https://api.spoonacular.com
-  api-key: eaea88e64ac24145ac40bd513a3e3084
+  api-key: e0360decfa3c48d1a5a1805e2565bd8b
 
 minio:
   bucket: images
