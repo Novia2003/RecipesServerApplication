@@ -1,4 +1,6 @@
 # "Recipes"
+<img src="https://github.com/NinelNina/recipes_mobile/blob/connect_backend/assets/icon/icon.png" width="250" height="250">
+
 ## Серверная часть [приложения](https://github.com/Novia2003/RecipeProject)
 Разработчик: [Вячеслав Новичихин](https://github.com/Novia2003)
 
