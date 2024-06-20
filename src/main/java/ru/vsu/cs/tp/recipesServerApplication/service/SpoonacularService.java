@@ -62,29 +62,40 @@ public class SpoonacularService {
         allInfoResponse.setImage(recipe.getImage());
         allInfoResponse.setReadyInMinutes(recipe.getReadyInMinutes());
 
-        if (recipe.getDishTypes().isEmpty())
-            allInfoResponse.setType(null);
-        else
+        if (recipe.getDishTypes() != null && !recipe.getDishTypes().isEmpty()) {
             allInfoResponse.setType(recipe.getDishTypes().get(0));
-
-        List<IngredientDTOResponse> list = new ArrayList<>();
-        for (IngredientDTO ingredientDTO: recipe.getExtendedIngredients()) {
-            IngredientDTOResponse ingredientDTOResponse = new IngredientDTOResponse();
-
-            ingredientDTOResponse.setName(ingredientDTO.getName());
-            ingredientDTOResponse.setAmount(ingredientDTO.getAmount());
-            ingredientDTOResponse.setUnit(ingredientDTO.getUnit());
-
-            list.add(ingredientDTOResponse);
+        } else {
+            allInfoResponse.setType(null);
         }
 
-        allInfoResponse.setExtendedIngredients(list);
+        if (recipe.getExtendedIngredients() != null && !recipe.getExtendedIngredients().isEmpty()) {
+            List<IngredientDTOResponse> list = new ArrayList<>();
+            for (IngredientDTO ingredientDTO : recipe.getExtendedIngredients()) {
+                IngredientDTOResponse ingredientDTOResponse = new IngredientDTOResponse();
 
-        List<String> steps = new ArrayList<>();
-        for (StepDTO stepDTO : recipe.getAnalyzedInstructions().get(0).getSteps())
-            steps.add(stepDTO.getStep());
+                ingredientDTOResponse.setName(ingredientDTO.getName());
+                ingredientDTOResponse.setAmount(ingredientDTO.getAmount());
+                ingredientDTOResponse.setUnit(ingredientDTO.getUnit());
 
-        allInfoResponse.setSteps(steps);
+                list.add(ingredientDTOResponse);
+            }
+
+            allInfoResponse.setExtendedIngredients(list);
+        } else {
+            allInfoResponse.setExtendedIngredients(new ArrayList<>());
+        }
+
+        if (recipe.getAnalyzedInstructions() != null && !recipe.getAnalyzedInstructions().isEmpty()
+                && recipe.getAnalyzedInstructions().get(0).getSteps() != null && !recipe.getAnalyzedInstructions().get(0).getSteps().isEmpty()) {
+            List<String> steps = new ArrayList<>();
+            for (StepDTO stepDTO : recipe.getAnalyzedInstructions().get(0).getSteps()) {
+                steps.add(stepDTO.getStep());
+            }
+            allInfoResponse.setSteps(steps);
+        } else {
+            allInfoResponse.setSteps(new ArrayList<>());
+        }
+
         allInfoResponse.setIsUserRecipe(false);
         allInfoResponse.setIsFavouriteRecipe(favoriteRecipeService.isRecipeFavourite(jwt, recipe.getId(), RecipeType.FROM_API));
 
@@ -103,7 +114,7 @@ public class SpoonacularService {
         if (diet != null) {
             resourceUrl += "&diet=" + diet;
 
-            if (query == null && type == null && page == 0)
+            if ((query == null || query.isEmpty()) && (type == null || type.isEmpty()) && page == 0)
                 dietService.increaseNumberViews(diet);
         }
 

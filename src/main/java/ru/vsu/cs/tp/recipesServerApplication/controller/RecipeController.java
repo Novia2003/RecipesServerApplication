@@ -1,8 +1,10 @@
 package ru.vsu.cs.tp.recipesServerApplication.controller;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.tp.recipesServerApplication.dto.response.recipe.RecipeAllInfoResponse;
@@ -30,10 +32,14 @@ public class RecipeController {
     ) {
         RecipeAllInfoResponse recipe;
 
-        if (isUserRecipe)
-            recipe = folkRecipeService.getRecipeInformation(id, jwt);
-        else
-            recipe = spoonacularService.getRecipeInformation(id, jwt);
+        try {
+            if (isUserRecipe)
+                recipe = folkRecipeService.getRecipeInformation(id, jwt);
+            else
+                recipe = spoonacularService.getRecipeInformation(id, jwt);
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         if (recipe == null) {
             return ResponseEntity.notFound().build();
@@ -54,10 +60,14 @@ public class RecipeController {
     ) {
         RecipesPreviewResponse recipes;
 
-        if (isUserRecipes)
-            recipes = folkRecipeService.getRecipes(query, page, number, jwt);
-        else
-            recipes = spoonacularService.getRecipes(query, type, diet, page, number, jwt);
+        try {
+            if (isUserRecipes)
+                recipes = folkRecipeService.getRecipes(query, page, number, jwt);
+            else
+                recipes = spoonacularService.getRecipes(query, type, diet, page, number, jwt);
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         if (recipes == null) {
             return ResponseEntity.notFound().build();
@@ -71,11 +81,20 @@ public class RecipeController {
     public ResponseEntity<RecipePreviewResponse> getRandomRecipe(
             @RequestHeader(required = false, name="token") String jwt
     ) {
-        RecipePreviewResponse recipe = spoonacularService.getRandomRecipe(jwt);
+        RecipePreviewResponse recipe;
+
+        try {
+            recipe = spoonacularService.getRandomRecipe(jwt);
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         if (recipe == null) {
             return ResponseEntity.notFound().build();
         }
+
         return ResponseEntity.ok(recipe);
     }
+
+
 }
