@@ -21,6 +21,7 @@ import ru.vsu.cs.tp.recipesServerApplication.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -81,8 +82,15 @@ public class FavoriteRecipeService {
             Recipe recipe = favoriteRecipe.getRecipe();
             RecipePreviewResponse result;
 
-            if (recipe.getRecipeType() == RecipeType.FROM_API)
+            if (recipe.getRecipeType() == RecipeType.FROM_API) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(200);
+                } catch (InterruptedException e) {
+                    return null;
+                }
+
                 result = getFavouriteSpoonacularRecipePreview(recipe.getRecipeId());
+            }
             else
                 result = getFavouriteFolkRecipePreview(recipe.getRecipeId());
 
