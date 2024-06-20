@@ -103,7 +103,7 @@ public class SpoonacularService {
         if (diet != null) {
             resourceUrl += "&diet=" + diet;
 
-            if (query == null && type == null && page == 0)
+            if ((query == null || query.isEmpty()) && (type == null || type.isEmpty()) && page == 0)
                 dietService.increaseNumberViews(diet);
         }
 
